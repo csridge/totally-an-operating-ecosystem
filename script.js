@@ -60,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
     function openEditor(file) {
         currentFile = file;
         textEditor.value = file.getAttribute('data-file-content');
