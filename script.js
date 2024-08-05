@@ -2,18 +2,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const fileSystem = document.getElementById('file-system');
     const createFileBtn = document.getElementById('create-file-btn');
     const removeFileBtn = document.getElementById('remove-file-btn');
+    const textEditorModal = document.getElementById('text-editor-modal');
+    const textEditor = document.getElementById('text-editor');
+    const saveFileBtn = document.getElementById('save-file-btn');
+    const closeEditorBtn = document.getElementById('close-editor-btn');
+    let currentFile = null;
 
     createFileBtn.addEventListener('click', createFile);
     removeFileBtn.addEventListener('click', removeFile);
+    saveFileBtn.addEventListener('click', saveFile);
+    closeEditorBtn.addEventListener('click', closeEditor);
 
     let fileCounter = 0;
 
     function createFile() {
-        const fileName = prompt('Enter file name:');
-        if (fileName) {
+        const fileName = prompt('Enter file name (with .txt extension):');
+        if (fileName && fileName.endsWith('.txt')) {
             const file = document.createElement('div');
             file.classList.add('file');
             file.setAttribute('data-file-id', fileCounter);
+            file.setAttribute('data-file-content', '');
 
             const fileIcon = document.createElement('div');
             fileIcon.classList.add('file-icon');
@@ -27,7 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
             file.appendChild(fileNameDiv);
             fileSystem.appendChild(file);
 
+            file.addEventListener('click', () => openEditor(file));
+
             fileCounter++;
+        } else {
+            alert('Please enter a valid .txt file name.');
         }
     }
 
@@ -47,5 +59,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('File not found');
             }
         }
+    }
+
+    function openEditor(file) {
+        currentFile = file;
+        textEditor.value = file.getAttribute('data-file-content');
+        textEditorModal.style.display = 'flex';
+    }
+
+    function saveFile() {
+        if (currentFile) {
+            currentFile.setAttribute('data-file-content', textEditor.value);
+            closeEditor();
+        }
+    }
+
+    function closeEditor() {
+        textEditorModal.style.display = 'none';
+        currentFile = null;
+        textEditor.value = '';
     }
 });
